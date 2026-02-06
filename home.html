@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Works BI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: #0d7377;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            background-color: #0d7377;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .sidebar-header .back-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            padding: 16px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 15px;
+            font-weight: 400;
+            border-left: 0px solid transparent;
+            margin: 4px 0;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-item-icon {
+            margin-right: 15px;
+            font-size: 20px;
+            width: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-item-icon svg,
+        .user-avatar svg,
+        .footer-btn svg {
+            fill: none;
+            stroke: white;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            background-color: #0d7377;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .user-details h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .footer-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 10px;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-btn:hover {
+            opacity: 0.7;
+        }
+
+        .main-content {
+            flex: 1;
+            background-color: #ecf0f1;
+            overflow-y: auto;
+        }
+
+        .header {
+            background-color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h2 {
+            color: #2c3e50;
+            font-size: 28px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .card p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a9b8e 0%, #168578 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card h4 {
+            font-size: 14px;
+            font-weight: 400;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .user-table th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .user-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .user-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-primary {
+            background-color: #1a9b8e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary:hover {
+            background-color: #168578;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #2c3e50;
+            font-size: 22px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .form-group-modal {
+            margin-bottom: 20px;
+        }
+
+        .form-group-modal label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group-modal input,
+        .form-group-modal textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-group-modal input:focus,
+        .form-group-modal textarea:focus {
+            border-color: #1a9b8e;
+        }
+
+        .form-group-modal textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-add-dashboard {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-add-dashboard:hover {
+            background-color: #2980b9;
+        }
+
+        .dashboard-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            align-items: center;
+        }
+
+        .dashboard-item input {
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .dashboard-item input:first-child {
+            flex: 0 0 200px;
+        }
+
+        .dashboard-item input:nth-child(2) {
+            flex: 1;
+        }
+
+        .btn-remove-dashboard {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-remove-dashboard:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-edit {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-right: 5px;
+        }
+
+        .btn-edit:hover {
+            background-color: #e67e22;
+        }
+
+        .dashboard-iframe-container {
+            width: 100%;
+            height: calc(100vh - 200px);
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .no-dashboard-config {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            color: #666;
+        }
+
+        .no-dashboard-config svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            stroke: #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="logo-branca.png" alt="Works BI">
+                <button class="back-btn">‹</button>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="showPage('dashboard')">
+                    <span class="nav-item-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="showPage('usuarios')">
+                    <span class="nav-item-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </span>
+                    <span>Usuários</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div class="user-details">
+                        <h4>Works BI</h4>
+                        <p>Proprietário Crm</p>
+                    </div>
+                </div>
+                <div class="footer-actions">
+                    <button class="footer-btn" title="Modo Escuro">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                    <button class="footer-btn" onclick="logout()" title="Sair">
+                        <svg width="20" height="20" viewBox="0 0 24 24">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <h2 id="pageTitle">Dashboard</h2>
+            </div>
+
+            <div class="content">
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="page-section active">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div>
+                                <h3>Dashboard Power BI</h3>
+                                <p>Visualize os dados e métricas da plataforma</p>
+                            </div>
+                            <button class="btn-primary" onclick="openConfigDashboardModal()">⚙️ Configurar Dashboard</button>
+                        </div>
+                        
+                        <div id="dashboardView">
+                            <div class="no-dashboard-config">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                                </svg>
+                                <h3>Nenhum dashboard configurado</h3>
+                                <p>Clique em "Configurar Dashboard" para adicionar um dashboard Power BI</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Usuários Section -->
+                <section id="usuarios" class="page-section">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div>
+                                <h3>Gerenciamento de Usuários</h3>
+                                <p>Visualize e gerencie todos os usuários da plataforma.</p>
+                            </div>
+                            <button class="btn-primary" onclick="openNewUserModal()">+ Novo Usuário</button>
+                        </div>
+
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Tipo</th>
+                                    <th>Dashboards</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Editar Usuário -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Editar Usuário</h3>
+                <button class="close-modal" onclick="closeEditUserModal()">&times;</button>
+            </div>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserIndex">
+                <div class="form-group-modal">
+                    <label for="editUserEmail">E-mail *</label>
+                    <input type="email" id="editUserEmail" required placeholder="usuario@exemplo.com">
+                </div>
+                <div class="form-group-modal">
+                    <label for="editUserPassword">Senha *</label>
+                    <input type="password" id="editUserPassword" required placeholder="Digite a senha">
+                </div>
+                <div class="form-group-modal">
+                    <label for="editUserType">Tipo de Usuário *</label>
+                    <select id="editUserType" required style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                        <option value="user">User (Somente visualização)</option>
+                        <option value="admin">Admin (Acesso total)</option>
+                    </select>
+                </div>
+                <div class="form-group-modal">
+                    <label>Dashboards Power BI</label>
+                    <div id="editDashboardList">
+                        <!-- Dashboards will be loaded here -->
+                    </div>
+                    <button type="button" class="btn-add-dashboard" onclick="addEditDashboardField()">+ Adicionar Dashboard</button>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeEditUserModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Novo Usuário -->
+    <div id="newUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Novo Usuário</h3>
+                <button class="close-modal" onclick="closeNewUserModal()">&times;</button>
+            </div>
+            <form id="newUserForm">
+                <div class="form-group-modal">
+                    <label for="userEmail">E-mail *</label>
+                    <input type="email" id="userEmail" required placeholder="usuario@exemplo.com">
+                </div>
+                <div class="form-group-modal">
+                    <label for="userPassword">Senha *</label>
+                    <input type="password" id="userPassword" required placeholder="Digite a senha">
+                </div>
+                <div class="form-group-modal">
+                    <label for="userType">Tipo de Usuário *</label>
+                    <select id="userType" required style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                        <option value="user">User (Somente visualização)</option>
+                        <option value="admin">Admin (Acesso total)</option>
+                    </select>
+                </div>
+                <div class="form-group-modal">
+                    <label>Dashboards Power BI</label>
+                    <div id="dashboardList">
+                        <div class="dashboard-item">
+                            <input type="text" placeholder="Nome do dashboard" class="dashboard-name" required>
+                            <input type="text" placeholder="Link do dashboard Power BI" class="dashboard-link" required>
+                            <button type="button" class="btn-remove-dashboard" onclick="removeDashboard(this)">X</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-dashboard" onclick="addDashboardField()">+ Adicionar Dashboard</button>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeNewUserModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Criar Usuário</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Configurar Dashboard -->
+    <div id="configDashboardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Configurar Dashboard</h3>
+                <button class="close-modal" onclick="closeConfigDashboardModal()">&times;</button>
+            </div>
+            <form id="configDashboardForm">
+                <div class="form-group-modal">
+                    <label for="adminDashboard">Link Dashboard Power BI *</label>
+                    <textarea id="adminDashboard" required placeholder="Cole aqui o link de incorporação do dashboard Power BI"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeConfigDashboardModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        // Check if user is admin
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        const token = localStorage.getItem('token');
+        
+        if (!currentUser || !token || currentUser.role !== 'admin') {
+            alert('Acesso negado! Apenas administradores podem acessar esta página.');
+            window.location.href = 'login.html';
+        }
+
+        let adminDashboard = localStorage.getItem('adminDashboard') || '';
+
+        function loadDashboard() {
+            const dashboardView = document.getElementById('dashboardView');
+            if (adminDashboard) {
+                dashboardView.innerHTML = `
+                    <div class="dashboard-iframe-container">
+                        <iframe class="dashboard-iframe" src="${adminDashboard}" frameborder="0" allowFullScreen="true"></iframe>
+                    </div>
+                `;
+            } else {
+                dashboardView.innerHTML = `
+                    <div class="no-dashboard-config">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
+                        <h3>Nenhum dashboard configurado</h3>
+                        <p>Clique em "Configurar Dashboard" para adicionar um dashboard Power BI</p>
+                    </div>
+                `;
+            }
+        }
+
+        function openConfigDashboardModal() {
+            document.getElementById('adminDashboard').value = adminDashboard;
+            document.getElementById('configDashboardModal').classList.add('active');
+        }
+
+        function closeConfigDashboardModal() {
+            document.getElementById('configDashboardModal').classList.remove('active');
+            document.getElementById('configDashboardForm').reset();
+        }
+
+        document.getElementById('configDashboardForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            adminDashboard = document.getElementById('adminDashboard').value;
+            localStorage.setItem('adminDashboard', adminDashboard);
+            
+            closeConfigDashboardModal();
+            loadDashboard();
+            alert('Dashboard configurado com sucesso!');
+        });
+
+        // Carregar usuários do backend
+        async function loadUsers() {
+            try {
+                const response = await userAPI.getAll();
+                const tbody = document.getElementById('userTableBody');
+                tbody.innerHTML = '';
+                
+                response.users.forEach((user) => {
+                    const row = document.createElement('tr');
+                    const dashCount = user.dashboards ? user.dashboards.length : 0;
+                    const typeLabel = user.role === 'admin' ? 'Admin' : 'User';
+                    row.innerHTML = `
+                        <td>${user.email}</td>
+                        <td>${typeLabel}</td>
+                        <td>${dashCount} dashboard(s)</td>
+                        <td>
+                            <button class="btn-edit" onclick="editUser('${user._id}')">Editar</button>
+                            <button class="btn-delete" onclick="deleteUser('${user._id}')">Excluir</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+                alert('Erro ao carregar usuários: ' + error.message);
+            }
+        }
+
+        function addDashboardField() {
+            const dashboardList = document.getElementById('dashboardList');
+            const newField = document.createElement('div');
+            newField.className = 'dashboard-item';
+            newField.innerHTML = `
+                <input type="text" placeholder="Nome do dashboard" class="dashboard-name" required>
+                <input type="text" placeholder="Link do dashboard Power BI" class="dashboard-link" required>
+                <button type="button" class="btn-remove-dashboard" onclick="removeDashboard(this)">X</button>
+            `;
+            dashboardList.appendChild(newField);
+        }
+
+        function removeDashboard(button) {
+            const dashboardList = document.getElementById('dashboardList');
+            if (dashboardList.children.length > 1) {
+                button.parentElement.remove();
+            } else {
+                alert('Deve haver pelo menos um dashboard!');
+            }
+        }
+
+        async function editUser(userId) {
+            try {
+                const response = await userAPI.getById(userId);
+                const user = response.user;
+                
+                document.getElementById('editUserIndex').value = userId;
+                document.getElementById('editUserEmail').value = user.email;
+                document.getElementById('editUserPassword').value = ''; // Não preenche senha
+                document.getElementById('editUserType').value = user.role || 'user';
+                
+                // Load dashboards
+                const editDashboardList = document.getElementById('editDashboardList');
+                editDashboardList.innerHTML = '';
+                
+                if (user.dashboards && user.dashboards.length > 0) {
+                    user.dashboards.forEach(dashboard => {
+                        const field = document.createElement('div');
+                        field.className = 'dashboard-item';
+                        field.innerHTML = `
+                            <input type="text" placeholder="Nome do dashboard" class="dashboard-name" value="${dashboard.name}" required>
+                            <input type="text" placeholder="Link do dashboard Power BI" class="dashboard-link" value="${dashboard.link}" required>
+                            <button type="button" class="btn-remove-dashboard" onclick="removeEditDashboard(this)">X</button>
+                        `;
+                        editDashboardList.appendChild(field);
+                    });
+                } else {
+                    addEditDashboardField();
+                }
+                
+                document.getElementById('editUserModal').classList.add('active');
+            } catch (error) {
+                alert('Erro ao carregar usuário: ' + error.message);
+            }
+        }
+
+        function closeEditUserModal() {
+            document.getElementById('editUserModal').classList.remove('active');
+            document.getElementById('editUserForm').reset();
+        }
+
+        function addEditDashboardField() {
+            const editDashboardList = document.getElementById('editDashboardList');
+            const newField = document.createElement('div');
+            newField.className = 'dashboard-item';
+            newField.innerHTML = `
+                <input type="text" placeholder="Nome do dashboard" class="dashboard-name" required>
+                <input type="text" placeholder="Link do dashboard Power BI" class="dashboard-link" required>
+                <button type="button" class="btn-remove-dashboard" onclick="removeEditDashboard(this)">X</button>
+            `;
+            editDashboardList.appendChild(newField);
+        }
+
+        function removeEditDashboard(button) {
+            const editDashboardList = document.getElementById('editDashboardList');
+            if (editDashboardList.children.length > 1) {
+                button.parentElement.remove();
+            } else {
+                alert('Deve haver pelo menos um dashboard!');
+            }
+        }
+
+        document.getElementById('editUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('editUserIndex').value;
+            const email = document.getElementById('editUserEmail').value;
+            const password = document.getElementById('editUserPassword').value;
+            const type = document.getElementById('editUserType').value;
+            
+            // Collect all dashboards
+            const dashboardItems = document.querySelectorAll('#editDashboardList .dashboard-item');
+            const dashboards = [];
+            dashboardItems.forEach(item => {
+                const name = item.querySelector('.dashboard-name').value;
+                const link = item.querySelector('.dashboard-link').value;
+                if (name && link) {
+                    dashboards.push({ name, link });
+                }
+            });
+            
+            try {
+                const updateData = {
+                    email,
+                    role: type,
+                    dashboards
+                };
+                
+                // Só envia senha se foi preenchida
+                if (password) {
+                    updateData.password = password;
+                }
+                
+                await userAPI.update(userId, updateData);
+                
+                closeEditUserModal();
+                loadUsers();
+                alert('Usuário atualizado com sucesso!');
+            } catch (error) {
+                alert('Erro ao atualizar usuário: ' + error.message);
+            }
+        });
+
+        function openNewUserModal() {
+            document.getElementById('newUserModal').classList.add('active');
+        }
+
+        function closeNewUserModal() {
+            document.getElementById('newUserModal').classList.remove('active');
+            document.getElementById('newUserForm').reset();
+            // Reset dashboard list to one field
+            const dashboardList = document.getElementById('dashboardList');
+            dashboardList.innerHTML = `
+                <div class="dashboard-item">
+                    <input type="text" placeholder="Nome do dashboard" class="dashboard-name" required>
+                    <input type="text" placeholder="Link do dashboard Power BI" class="dashboard-link" required>
+                    <button type="button" class="btn-remove-dashboard" onclick="removeDashboard(this)">X</button>
+                </div>
+            `;
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm('Tem certeza que deseja excluir este usuário?')) return;
+            
+            try {
+                await userAPI.delete(userId);
+                loadUsers();
+                alert('Usuário deletado com sucesso!');
+            } catch (error) {
+                alert('Erro ao deletar usuário: ' + error.message);
+            }
+        }
+
+        document.getElementById('newUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('userEmail').value;
+            const password = document.getElementById('userPassword').value;
+            const type = document.getElementById('userType').value;
+            
+            // Collect all dashboards
+            const dashboardItems = document.querySelectorAll('.dashboard-item');
+            const dashboards = [];
+            dashboardItems.forEach(item => {
+                const name = item.querySelector('.dashboard-name').value;
+                const link = item.querySelector('.dashboard-link').value;
+                if (name && link) {
+                    dashboards.push({ name, link });
+                }
+            });
+            
+            try {
+                await userAPI.create({
+                    name: email.split('@')[0],
+                    email,
+                    password,
+                    role: type,
+                    dashboards
+                });
+                
+                closeNewUserModal();
+                loadUsers();
+                alert('Usuário criado com sucesso!');
+            } catch (error) {
+                alert('Erro ao criar usuário: ' + error.message);
+            }
+        });
+
+        // Load dashboard and users when page loads
+        loadDashboard();
+        loadUsers();
+
+        function showPage(pageName) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(pageName).classList.add('active');
+
+            // Set active nav item
+            event.target.closest('.nav-item').classList.add('active');
+
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'usuarios': 'Usuários'
+            };
+            document.getElementById('pageTitle').textContent = titles[pageName];
+        }
+
+        function logout() {
+            if (confirm('Deseja realmente sair?')) {
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
