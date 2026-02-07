@@ -4,7 +4,7 @@ const userCache = require('../middlewares/cache');
 // Criar usuário (apenas admin)
 exports.createUser = async (req, res) => {
   try {
-    const { name, email, password, role, dashboards } = req.body;
+    const { name, email, password, role, dashboards, isActive } = req.body;
 
     // Validação
     if (!name || !email || !password) {
@@ -23,7 +23,8 @@ exports.createUser = async (req, res) => {
       email,
       password,
       role: role || 'user',
-      dashboards: dashboards || []
+      dashboards: dashboards || [],
+      isActive: isActive !== undefined ? isActive : true
     });
 
     res.status(201).json({

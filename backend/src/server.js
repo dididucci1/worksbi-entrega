@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const connectDB = require('./config/database');
 
 // Importa rotas
@@ -22,6 +23,11 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Servir arquivos estáticos do frontend (raiz do projeto)
+// Isso permite acessar login.html, home.html, dashboard.html e api.js diretamente
+const frontendRoot = path.resolve(__dirname, '../../');
+app.use(express.static(frontendRoot));
+
 // Log de requisições (apenas em desenvolvimento)
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
@@ -35,13 +41,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// Rota de teste
+// Rota raiz: abre a página de Login do frontend
 app.get('/', (req, res) => {
-  res.json({
-    message: 'Works BI API - Backend rodando!',
-    version: '1.0.0',
-    database: 'worksbi_portal_clientes'
-  });
+  res.sendFile(path.join(frontendRoot, 'login.html'));
 });
 
 // Rota de health check

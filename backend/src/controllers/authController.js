@@ -44,7 +44,8 @@ exports.login = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
-      dashboards: user.dashboards
+      dashboards: user.dashboards,
+      isActive: user.isActive !== undefined ? user.isActive : true
     };
 
     // Salva no cache

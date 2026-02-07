@@ -22,7 +22,7 @@ const protect = async (req, res, next) => {
     // Verifica no cache primeiro (OTIMIZAÇÃO)
     let user = userCache.get(`user_${decoded.userId}`);
 
-    if (!user) {
+    if (!user || typeof user.isActive === 'undefined') {
       // Se não está no cache, busca no banco (selecionando apenas campos necessários)
       user = await User.findById(decoded.userId)
         .select('_id name email role dashboards isActive')
