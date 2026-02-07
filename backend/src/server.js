@@ -4,31 +4,35 @@ const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/database');
 
-// Importa rotas
+// Rotas
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const dashboardRoutes = require('./routes/dashboard');
 
-// Inicializa o Express
 const app = express();
 
-// Conecta ao MongoDB
-connectDB();
-
-// Middlewares
+// =======================
+// MIDDLEWARES
+// =======================
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
-  credentials: true
+  credentials: false,
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization']
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Servir arquivos estáticos do frontend (raiz do projeto)
-// Isso permite acessar index.html, home.html, dashboard.html e api.js diretamente
+// =======================
+// FRONTEND ESTÁTICO
+// =======================
 const frontendRoot = path.resolve(__dirname, '../../');
 app.use(express.static(frontendRoot));
 
-// Log de requisições (apenas em desenvolvimento)
+// =======================
+// LOG DEV
+// =======================
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
     console.log(`${req.method} ${req.path}`);
@@ -36,54 +40,54 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-// Rotas
+// =======================
+// ROTAS API
+// =======================
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// Rota raiz: abre a página inicial (index)
+// =======================
+// ROOT
+// =======================
 app.get('/', (req, res) => {
   res.sendFile(path.join(frontendRoot, 'index.html'));
 });
 
-// Rota de health check
+// Health check (IMPORTANTE pro Fly)
 app.get('/health', (req, res) => {
-  res.json({
-    status: 'OK',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString()
-  });
+  res.json({ status: 'ok' });
 });
 
-// Tratamento de rotas não encontradas
+// =======================
+// 404
+// =======================
 app.use((req, res) => {
   res.status(404).json({ message: 'Rota não encontrada' });
 });
 
-// Tratamento de erros global
-app.use((err, req, res, next) => {
-  console.error('Erro:', err);
-  res.status(err.status || 500).json({
-    message: err.message || 'Erro interno do servidor',
-    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
-  });
-});
-
-// Inicia o servidor
+// =======================
+// START SERVER (ANTES DO MONGO)
+// =======================
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`\n🚀 Servidor rodando na porta ${PORT}`);
-  console.log(`📍 URL: http://localhost:${PORT}`);
-  console.log(`🔧 Ambiente: ${process.env.NODE_ENV || 'development'}\n`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
 
-// Tratamento de erros não capturados
+// =======================
+// MONGO (NÃO TRAVA O SERVER)
+// =======================
+connectDB()
+  .then(() => console.log('✅ MongoDB conectado'))
+  .catch(err => console.log('⚠️ MongoDB desconectado:', err.message));
+
+// =======================
+// ERROS (NÃO DERRUBA EM PROD)
+// =======================
 process.on('unhandledRejection', (err) => {
-  console.error('❌ Unhandled Rejection:', err);
-  process.exit(1);
+  console.error('Unhandled Rejection:', err);
 });
 
 process.on('uncaughtException', (err) => {
-  console.error('❌ Uncaught Exception:', err);
-  process.exit(1);
+  console.error('Uncaught Exception:', err);
 });
