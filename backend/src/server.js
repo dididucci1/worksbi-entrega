@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Servir arquivos estáticos do frontend (raiz do projeto)
-// Isso permite acessar login.html, home.html, dashboard.html e api.js diretamente
+// Isso permite acessar index.html, home.html, dashboard.html e api.js diretamente
 const frontendRoot = path.resolve(__dirname, '../../');
 app.use(express.static(frontendRoot));
 
@@ -41,9 +41,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// Rota raiz: abre a página de Login do frontend
+// Rota raiz: abre a página inicial (index)
 app.get('/', (req, res) => {
-  res.sendFile(path.join(frontendRoot, 'login.html'));
+  res.sendFile(path.join(frontendRoot, 'index.html'));
 });
 
 // Rota de health check
