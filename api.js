@@ -1,7 +1,7 @@
 // Configuração da API
-const API_URL = location.hostname.includes('localhost')
-  ? 'http://localhost:5000/api'
-  : 'https://backend-green-meadow-9613.fly.dev/api';
+// Em produção, Vercel fará o proxy /api -> backend (vercel.json rewrites)
+// Em dev, quando servido pelo backend em localhost:5000, '/api' também funciona
+const API_URL = '/api';
 
 
 // Função auxiliar para fazer requisições
