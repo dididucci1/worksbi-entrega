@@ -219,7 +219,7 @@
         const token = localStorage.getItem('token');
         
         if (!currentUser || !token) {
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         } else {
             document.getElementById('userEmail').textContent = currentUser.email;
             loadUserDashboards();
@@ -279,7 +279,7 @@
             if (confirm('Deseja realmente sair?')) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('currentUser');
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         }
     </script>

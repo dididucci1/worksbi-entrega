@@ -1,0 +1,6 @@
+{
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/login.html", "destination": "/", "permanent": true }
+  ]
+}

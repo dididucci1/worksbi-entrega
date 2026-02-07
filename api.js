@@ -1,5 +1,8 @@
 // Configuração da API
-const API_URL = 'http://localhost:5000/api';
+const API_URL = location.hostname.includes('localhost')
+  ? 'http://localhost:5000/api'
+  : 'https://backend-green-meadow-9613.fly.dev/api';
+
 
 // Função auxiliar para fazer requisições
 async function apiRequest(endpoint, options = {}) {
