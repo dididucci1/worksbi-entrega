@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const compression = require('compression');
 const path = require('path');
 const connectDB = require('./config/database');
 
@@ -14,6 +15,8 @@ const app = express();
 // =======================
 // MIDDLEWARES
 // =======================
+// Compress responses to improve load times
+app.use(compression());
 app.use(cors({
   origin: process.env.CORS_ORIGIN || '*',
   credentials: false,
@@ -28,7 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 // FRONTEND ESTÁTICO
 // =======================
 const frontendRoot = path.resolve(__dirname, '../../');
-app.use(express.static(frontendRoot));
+// Add cache headers for static assets
+app.use(express.static(frontendRoot, { maxAge: process.env.STATIC_MAX_AGE || '1d' }));
 
 // =======================
 // LOG DEV

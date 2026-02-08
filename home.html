@@ -29,6 +29,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: width 0.3s ease;
         }
 
         .sidebar-header {
@@ -97,6 +98,15 @@
             stroke-linecap: round;
             stroke-linejoin: round;
         }
+
+        /* Sidebar colapsada (desktop) */
+        .sidebar.collapsed { width: 70px; }
+        .sidebar.collapsed .sidebar-header { padding: 20px 12px; }
+        .sidebar.collapsed .sidebar-header img { display: none; }
+        .sidebar.collapsed .nav-item { justify-content: center; padding: 12px 0; }
+        .sidebar.collapsed .nav-item span:last-child { display: none; }
+        .sidebar.collapsed .user-info { display: none; }
+        .sidebar.collapsed .footer-actions { justify-content: center; }
 
         .sidebar-footer {
             padding: 20px;
@@ -205,6 +215,21 @@
             line-height: 1.6;
         }
 
+        /* Dark mode simples (sem complicar) */
+        body.dark { background-color: #000; color: #fff; }
+        body.dark .main-content { background-color: #111; }
+        body.dark .header { background-color: #1b1b1b; box-shadow: 0 2px 5px rgba(0,0,0,0.6); }
+        body.dark .header h2 { color: #fff; }
+        body.dark .card { background-color: #1e1e1e; box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+        body.dark .card h3 { color: #fff; }
+        body.dark .card p { color: #ccc; }
+        body.dark .user-table th { background-color: #222; color: #fff; }
+        body.dark .user-table td { border-bottom: 1px solid #333; color: #ddd; }
+        body.dark .dashboard-item { background-color: #222; }
+        body.dark .modal-content { background-color: #1f1f1f; }
+        body.dark .form-group-modal label { color: #eee; }
+        body.dark .close-modal { color: #bbb; }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -254,6 +279,11 @@
         .user-table tr:hover {
             background-color: #f8f9fa;
         }
+
+        /* Responsividade da tabela */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        .table-responsive::-webkit-scrollbar { height: 6px; }
+        .table-responsive::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
 
         .btn-primary {
             background-color: #1a9b8e;
@@ -496,14 +526,30 @@
         }
 
         @media (max-width: 768px) {
+            .container { height: 100vh; }
             .sidebar {
-                width: 200px;
+                width: 280px;
+                position: fixed;
+                left: -280px;
+                top: 0;
+                bottom: 0;
+                z-index: 1000;
+                transition: left 0.3s ease;
             }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
+            .sidebar.open { left: 0; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .header { display: flex; align-items: center; justify-content: space-between; }
+            .mobile-menu-btn { display: inline-flex !important; padding: 8px 12px; background: #0d7377; color: #fff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+            .header h2 { font-size: 22px; }
+            .content { padding: 16px; }
+            .card { padding: 16px; }
+            .user-table th, .user-table td { padding: 10px; font-size: 13px; }
+            .user-table { min-width: 520px; }
+            .dashboard-iframe-container { height: calc(100vh - 260px); }
         }
+
+        /* Ocultar botão mobile no desktop */
+        .mobile-menu-btn { display: none; }
     </style>
 </head>
 <body>
@@ -553,7 +599,7 @@
                     </div>
                 </div>
                 <div class="footer-actions">
-                    <button class="footer-btn" title="Modo Escuro">
+                    <button class="footer-btn" id="darkModeBtn" title="Modo Escuro">
                         <svg width="20" height="20" viewBox="0 0 24 24">
                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                         </svg>
@@ -572,6 +618,7 @@
         <main class="main-content">
             <div class="header">
                 <h2 id="pageTitle">Dashboard</h2>
+                <button class="mobile-menu-btn" onclick="toggleSidebarMobile()">☰</button>
             </div>
 
             <div class="content">
@@ -611,7 +658,8 @@
                             <button class="btn-primary" onclick="openNewUserModal()">+ Novo Usuário</button>
                         </div>
 
-                        <table class="user-table">
+                        <div class="table-responsive">
+                            <table class="user-table">
                             <thead>
                                 <tr>
                                     <th>Email</th>
@@ -623,7 +671,8 @@
                             <tbody id="userTableBody">
                                 <!-- Users will be loaded here -->
                             </tbody>
-                        </table>
+                            </table>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -787,7 +836,7 @@
                         <select id="dashboardSelect" style="padding:8px; border:1px solid #e0e0e0; border-radius:6px;"></select>
                     </div>
                     <div class="dashboard-iframe-container">
-                        <iframe id="homeDashboardIframe" class="dashboard-iframe" src="" frameborder="0" allowFullScreen="true"></iframe>
+                        <iframe id="homeDashboardIframe" class="dashboard-iframe" src="" frameborder="0" allowFullScreen="true" loading="lazy"></iframe>
                     </div>
                 `;
 
@@ -1095,6 +1144,49 @@
                 window.location.href = 'index.html';
             }
         }
+
+        // ===== Dark mode =====
+        const darkModeBtn = document.getElementById('darkModeBtn');
+        function applyStoredTheme() {
+            const isDark = localStorage.getItem('darkMode') === 'true';
+            document.body.classList.toggle('dark', isDark);
+        }
+        applyStoredTheme();
+        if (darkModeBtn) {
+            darkModeBtn.addEventListener('click', () => {
+                const nowDark = !document.body.classList.contains('dark');
+                document.body.classList.toggle('dark', nowDark);
+                localStorage.setItem('darkMode', nowDark);
+            });
+        }
+
+        // ===== Sidebar toggle (desktop collapse / mobile drawer) =====
+        const sidebar = document.querySelector('.sidebar');
+        const backBtn = document.querySelector('.back-btn');
+
+        function toggleSidebarCollapse() {
+            sidebar.classList.toggle('collapsed');
+        }
+        function toggleSidebarMobile() {
+            sidebar.classList.toggle('open');
+        }
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    toggleSidebarMobile();
+                } else {
+                    toggleSidebarCollapse();
+                }
+            });
+        }
+
+        // Close mobile sidebar when clicking outside
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+                const isClickInside = sidebar.contains(e.target) || e.target.classList.contains('mobile-menu-btn');
+                if (!isClickInside) sidebar.classList.remove('open');
+            }
+        });
     </script>
 </body>
 </html>
