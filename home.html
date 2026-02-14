@@ -955,9 +955,6 @@
                 const response = await userAPI.getById(userId);
                 const user = response.user;
                 
-                console.log('👤 Carregando usuário:', user); // DEBUG
-                console.log('🖼️ Logo do usuário:', user.logo); // DEBUG
-                
                 document.getElementById('editUserIndex').value = userId;
                 document.getElementById('editUserName').value = user.name || '';
                 document.getElementById('editUserEmail').value = user.email;
@@ -965,8 +962,6 @@
                 document.getElementById('editUserType').value = user.role || 'user';
                 document.getElementById('editUserLogo').value = user.logo || 'logo.png';
                 document.getElementById('editUserIsActive').checked = !!user.isActive;
-                
-                console.log('✅ Logo carregado no select:', document.getElementById('editUserLogo').value); // DEBUG
                 
                 // Load dashboards
                 const editDashboardList = document.getElementById('editDashboardList');
@@ -1030,8 +1025,6 @@
             const logo = document.getElementById('editUserLogo').value;
             const isActive = document.getElementById('editUserIsActive').checked;
             
-            console.log('🔍 Logo selecionado:', logo); // DEBUG
-            
             // Collect all dashboards
             const dashboardItems = document.querySelectorAll('#editDashboardList .dashboard-item');
             const dashboards = [];
@@ -1053,16 +1046,12 @@
                     logo
                 };
                 
-                console.log('📤 Enviando dados de atualização:', updateData); // DEBUG
-                
                 // Só envia senha se foi preenchida
                 if (password) {
                     updateData.password = password;
                 }
                 
-                const response = await userAPI.update(userId, updateData);
-                
-                console.log('✅ Resposta do servidor:', response); // DEBUG
+                await userAPI.update(userId, updateData);
                 
                 // Se o usuário editou a si mesmo, atualiza o localStorage
                 const currentUser = JSON.parse(localStorage.getItem('currentUser'));

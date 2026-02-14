@@ -98,17 +98,11 @@ exports.updateUser = async (req, res) => {
     const { name, email, password, role, dashboards, isActive, logo } = req.body;
     const userId = req.params.id;
 
-    console.log('📥 Recebendo atualização para usuário:', userId); // DEBUG
-    console.log('🖼️ Logo recebido:', logo); // DEBUG
-    console.log('📦 Dados completos:', req.body); // DEBUG
-
     // Busca usuário
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
-
-    console.log('👤 Usuário antes da atualização:', { logo: user.logo }); // DEBUG
 
     // Verifica se email já existe (se for diferente do atual)
     if (email && email !== user.email) {
@@ -127,11 +121,7 @@ exports.updateUser = async (req, res) => {
     if (isActive !== undefined) user.isActive = isActive;
     if (logo !== undefined) user.logo = logo; // Permitir atualizar mesmo se for string vazia
 
-    console.log('👤 Usuário depois da atualização (antes de salvar):', { logo: user.logo }); // DEBUG
-
     await user.save();
-
-    console.log('💾 Usuário salvo com logo:', user.logo); // DEBUG
 
     // Limpa cache do usuário
     userCache.delete(`user_${userId}`);
