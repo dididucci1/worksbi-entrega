@@ -180,7 +180,7 @@
 <body>
     <header class="header">
         <div class="header-left">
-            <img src="logo.png" alt="Works BI" class="logo">
+            <img src="logo.png" alt="Works BI" class="logo" id="headerLogo">
         </div>
         <div class="user-info">
             <span class="user-email" id="userEmail"></span>
@@ -222,6 +222,10 @@
             window.location.href = 'index.html';
         } else {
             document.getElementById('userEmail').textContent = currentUser.email;
+            // Atualiza o logo do usuário
+            if (currentUser.logo) {
+                document.getElementById('headerLogo').src = currentUser.logo;
+            }
             loadUserDashboards();
         }
 

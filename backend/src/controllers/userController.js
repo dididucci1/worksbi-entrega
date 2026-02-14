@@ -4,7 +4,7 @@ const userCache = require('../middlewares/cache');
 // Criar usuário (apenas admin)
 exports.createUser = async (req, res) => {
   try {
-    const { name, email, password, role, dashboards, isActive } = req.body;
+    const { name, email, password, role, dashboards, isActive, logo } = req.body;
 
     // Validação
     if (!name || !email || !password) {
@@ -24,7 +24,8 @@ exports.createUser = async (req, res) => {
       password,
       role: role || 'user',
       dashboards: dashboards || [],
-      isActive: isActive !== undefined ? isActive : true
+      isActive: isActive !== undefined ? isActive : true,
+      logo: logo || 'logo.png'
     });
 
     res.status(201).json({
@@ -37,6 +38,7 @@ exports.createUser = async (req, res) => {
         role: user.role,
         dashboards: user.dashboards,
         isActive: user.isActive,
+        logo: user.logo,
         createdAt: user.createdAt
       }
     });
@@ -52,7 +54,7 @@ exports.getUsers = async (req, res) => {
   try {
     // Busca apenas campos necessários (sem password)
     const users = await User.find()
-      .select('name email role dashboards isActive createdAt')
+      .select('name email role dashboards isActive logo createdAt')
       .sort({ createdAt: -1 })
       .lean(); // Converte para objeto JS puro (mais rápido)
 
@@ -72,7 +74,7 @@ exports.getUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id)
-      .select('name email role dashboards isActive createdAt')
+      .select('name email role dashboards isActive logo createdAt')
       .lean();
 
     if (!user) {
@@ -93,7 +95,7 @@ exports.getUserById = async (req, res) => {
 // Atualizar usuário (apenas admin)
 exports.updateUser = async (req, res) => {
   try {
-    const { name, email, password, role, dashboards, isActive } = req.body;
+    const { name, email, password, role, dashboards, isActive, logo } = req.body;
     const userId = req.params.id;
 
     // Busca usuário
@@ -117,6 +119,7 @@ exports.updateUser = async (req, res) => {
     if (role) user.role = role;
     if (dashboards !== undefined) user.dashboards = dashboards;
     if (isActive !== undefined) user.isActive = isActive;
+    if (logo) user.logo = logo;
 
     await user.save();
 
@@ -132,7 +135,8 @@ exports.updateUser = async (req, res) => {
         email: user.email,
         role: user.role,
         dashboards: user.dashboards,
-        isActive: user.isActive
+        isActive: user.isActive,
+        logo: user.logo
       }
     });
 

@@ -23,7 +23,7 @@ exports.login = async (req, res) => {
 
     // Busca usuário selecionando apenas campos necessários + password
     const user = await User.findOne({ email, isActive: true })
-      .select('+password name email role dashboards');
+      .select('+password name email role dashboards logo');
 
     if (!user) {
       return res.status(401).json({ message: 'Credenciais inválidas' });
@@ -45,7 +45,8 @@ exports.login = async (req, res) => {
       email: user.email,
       role: user.role,
       dashboards: user.dashboards,
-      isActive: user.isActive !== undefined ? user.isActive : true
+      isActive: user.isActive !== undefined ? user.isActive : true,
+      logo: user.logo || 'logo.png'
     };
 
     // Salva no cache

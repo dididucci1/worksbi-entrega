@@ -556,7 +556,7 @@
     <div class="container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="logo-branca.png" alt="Works BI">
+                <img src="logo-branca.png" alt="Works BI" id="sidebarLogo">
                 <button class="back-btn">‹</button>
             </div>
 
@@ -708,6 +708,14 @@
                     </select>
                 </div>
                 <div class="form-group-modal">
+                    <label for="editUserLogo">Logo *</label>
+                    <select id="editUserLogo" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                        <option value="logo.png">Logo Padrão (Works BI)</option>
+                        <option value="logo-branca.png">Logo Branca</option>
+                        <option value="logo_maze.png">Logo Maze</option>
+                    </select>
+                </div>
+                <div class="form-group-modal">
                     <label>Dashboards Power BI</label>
                     <div id="editDashboardList">
                         <!-- Dashboards will be loaded here -->
@@ -753,6 +761,14 @@
                     <select id="userType" required style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
                         <option value="user">User (Somente visualização)</option>
                         <option value="admin">Admin (Acesso total)</option>
+                    </select>
+                </div>
+                <div class="form-group-modal">
+                    <label for="userLogo">Logo *</label>
+                    <select id="userLogo" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                        <option value="logo.png">Logo Padrão (Works BI)</option>
+                        <option value="logo-branca.png">Logo Branca</option>
+                        <option value="logo_maze.png">Logo Maze</option>
                     </select>
                 </div>
                 <div class="form-group-modal" style="display:flex; align-items:center; gap:10px;">
@@ -922,6 +938,7 @@
                 document.getElementById('editUserEmail').value = user.email;
                 document.getElementById('editUserPassword').value = ''; // Não preenche senha
                 document.getElementById('editUserType').value = user.role || 'user';
+                document.getElementById('editUserLogo').value = user.logo || 'logo.png';
                 document.getElementById('editUserIsActive').checked = !!user.isActive;
                 
                 // Load dashboards
@@ -983,6 +1000,7 @@
             const email = document.getElementById('editUserEmail').value;
             const password = document.getElementById('editUserPassword').value;
             const type = document.getElementById('editUserType').value;
+            const logo = document.getElementById('editUserLogo').value;
             const isActive = document.getElementById('editUserIsActive').checked;
             
             // Collect all dashboards
@@ -1002,7 +1020,8 @@
                     email,
                     role: type,
                     dashboards,
-                    isActive
+                    isActive,
+                    logo
                 };
                 
                 // Só envia senha se foi preenchida
@@ -1057,6 +1076,7 @@
             const email = document.getElementById('userEmail').value;
             const password = document.getElementById('userPassword').value;
             const type = document.getElementById('userType').value;
+            const logo = document.getElementById('userLogo').value;
             const isActive = document.getElementById('userIsActive').checked;
             
             // Collect all dashboards
@@ -1077,7 +1097,8 @@
                     password,
                     role: type,
                     dashboards,
-                    isActive
+                    isActive,
+                    logo
                 });
                 
                 closeNewUserModal();
@@ -1097,6 +1118,10 @@
             const roleLabel = currentUserSidebar.role === 'admin' ? 'Administrador' : 'Usuário';
             document.getElementById('sidebarUserName').textContent = currentUserSidebar.name || currentUserSidebar.email;
             document.getElementById('sidebarUserRole').textContent = roleLabel;
+            // Atualiza o logo do usuário se existir
+            if (currentUserSidebar.logo) {
+                document.getElementById('sidebarLogo').src = currentUserSidebar.logo;
+            }
         }
 
         // Hide Users menu/section for non-admin users

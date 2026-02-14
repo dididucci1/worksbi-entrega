@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user'],
     default: 'user'
   },
+  logo: {
+    type: String,
+    default: 'logo.png' // Logo padrão
+  },
   dashboards: [{
     name: {
       type: String,
