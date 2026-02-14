@@ -119,7 +119,7 @@ exports.updateUser = async (req, res) => {
     if (role) user.role = role;
     if (dashboards !== undefined) user.dashboards = dashboards;
     if (isActive !== undefined) user.isActive = isActive;
-    if (logo) user.logo = logo;
+    if (logo !== undefined) user.logo = logo; // Permitir atualizar mesmo se for string vazia
 
     await user.save();
 

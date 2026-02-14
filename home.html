@@ -824,6 +824,28 @@
             window.location.href = 'index.html';
         }
 
+        // Sincroniza dados do usuário com o backend (garante que o logo está atualizado)
+        async function syncCurrentUser() {
+            try {
+                const response = await authAPI.me();
+                if (response.success && response.user) {
+                    localStorage.setItem('currentUser', JSON.stringify(response.user));
+                    // Atualiza o logo se mudou
+                    if (response.user.logo) {
+                        const logoElement = document.getElementById('sidebarLogo');
+                        if (logoElement) {
+                            logoElement.src = response.user.logo;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao sincronizar usuário:', error);
+            }
+        }
+
+        // Sincroniza ao carregar a página
+        syncCurrentUser();
+
         async function loadDashboard() {
             const dashboardView = document.getElementById('dashboardView');
             try {
@@ -1030,6 +1052,18 @@
                 }
                 
                 await userAPI.update(userId, updateData);
+                
+                // Se o usuário editou a si mesmo, atualiza o localStorage
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (currentUser && currentUser._id === userId) {
+                    // Busca os dados atualizados do usuário
+                    const updatedResponse = await userAPI.getById(userId);
+                    localStorage.setItem('currentUser', JSON.stringify(updatedResponse.user));
+                    // Atualiza o logo na sidebar se necessário
+                    if (updatedResponse.user.logo) {
+                        document.getElementById('sidebarLogo').src = updatedResponse.user.logo;
+                    }
+                }
                 
                 closeEditUserModal();
                 loadUsers();

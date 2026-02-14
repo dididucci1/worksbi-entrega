@@ -226,6 +226,25 @@
             if (currentUser.logo) {
                 document.getElementById('headerLogo').src = currentUser.logo;
             }
+            syncUserAndLoadDashboards();
+        }
+
+        // Sincroniza dados do usuário com o backend e carrega dashboards
+        async function syncUserAndLoadDashboards() {
+            try {
+                // Busca dados atualizados do usuário
+                const response = await authAPI.me();
+                if (response.success && response.user) {
+                    localStorage.setItem('currentUser', JSON.stringify(response.user));
+                    // Atualiza o logo se mudou
+                    if (response.user.logo) {
+                        document.getElementById('headerLogo').src = response.user.logo;
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao sincronizar usuário:', error);
+            }
+            // Carrega dashboards
             loadUserDashboards();
         }
 
